@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
+import os
 
 from pathlib import Path
 
@@ -20,12 +21,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-vpve()&+w_vgb)lg=j!6n6a%)0=9$!5ggla_cm8g-4n2t1__qy'
+SECRET_KEY = os.environ.get("SECRET_KEY")
+# 'django-insecure-vpve()&+w_vgb)lg=j!6n6a%)0=9$!5ggla_cm8g-4n2t1__qy'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG","False").lower() == "true"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(" ")
 
 
 # Application definition
@@ -128,4 +130,3 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'vanjani081@gmail.com'
 EMAIL_HOST_PASSWORD = 'zduz ebhc tgyv wanj'  # your App Password
-
