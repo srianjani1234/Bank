@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+   <link rel="stylesheet" href="{% static 'css/help.css' %}">
+</head>
+<body>
+  <section class="help-section">
+  <div class="help-container">
+    <h2>Help & Support – BOB Bank</h2>
+    <p>Welcome to the BOB Bank Help Center. Here you'll find answers to common questions and guidance for using our services smoothly.</p>
+
+    <div class="faq">
+      <h3>💬 Frequently Asked Questions (FAQs)</h3>
+
+      <h4>🔐 How do I create a new bank account?</h4>
+      <p>Go to the "Create Account" page, fill out your details, and click submit. Your account will be created instantly.</p>
+
+      <h4>💳 How do I generate a PIN?</h4>
+      <p>Use the "Generate PIN" section. Enter your account number and follow the instructions to securely create your PIN.</p>
+
+      <h4>💰 How do I deposit or withdraw money?</h4>
+      <p>Navigate to "Deposit" or "Withdraw" from the main menu. Enter the amount and confirm your action.</p>
+
+      <h4>🔁 How do I transfer funds to another account?</h4>
+      <p>Go to the "Account Transfer" section, enter the receiver's account number and amount, then click Transfer.</p>
+
+      <h4>📊 How do I check my balance?</h4>
+      <p>Click on "Balance Enquiry" and enter your account number. Your current balance will be displayed securely.</p>
+
+      <h4>❌ How can I delete my account?</h4>
+      <p>In the "Delete Account" section, enter your account credentials and follow the confirmation steps.</p>
+    </div>
+
+    <div class="support-contact">
+      <h3>📞 Need Further Assistance?</h3>
+      <p>Email us at <strong>anjuu@gmail.com</strong> or call <strong>+91-1234567890</strong>.</p>
+    </div>
+  </div>
+   <div class="back-button-container">
+  <button onclick="history.back()" class="back-button"><a href="{% url 'index' %}">⬅ Back</a></button>
+</div>
+</section>
+
+</body>
+</html>

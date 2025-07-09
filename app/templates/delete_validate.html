@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>End My Access</title>
+  <link rel="stylesheet" href="{% static 'css/dv.css' %}"/>
+  <style>
+
+    #loader-overlay {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(255,255,255,0.8);
+      display: none;             /* hidden until .active */
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .spinner {
+      width: 40px; height: 40px;
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #e85c5c;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+
+    #message {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 1.1rem;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-div-main">
+      <h1 id="title">BOB BANK</h1>
+      <ol>
+        <a href="{% url 'index' %}"><li>Home</li></a>
+        <a href="{% url 'about' %}"><li>About Us</li></a>
+        <a href="{% url 'contact' %}"><li>Contact Us</li></a>
+        <a href="{% url 'help' %}"><li>Help</li></a>
+      </ol>
+    </div>
+  </nav>
+
+  <h1>END MY ACCESS</h1>
+  <form id="delete-validation-form" method="post">
+    {% csrf_token %}
+    <div class="form-inner-div">
+      <div class="middle-div">
+        <label>OTP</label><br><br>
+        <input type="password" name="otp" required><br><br>
+
+        <div class="btn-div">
+ 
+          <button type="submit" id="submit-btn">DELETE</button>
+
+          <button type="button" onclick="location">
+            BACK
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  
+  <div id="loader-overlay">
+    <div class="spinner"></div>
+    <p><strong>Processing, please wait…</strong></p>
+  </div>
+
+  <div id="message"></div>
+
+ <div id="foot">
+<footer class="footer">
+  <div class="footer-container">
+
+    <div class="footer-section about">
+      <h3>About BOB Bank</h3>
+      <p>
+        BOB Bank is committed to providing you with secure, reliable banking
+        services. From savings accounts to loans, we’re here to help you grow
+        your financial future.
+      </p>
+    </div>
+
+
+    <div class="footer-section links">
+      <h3>Quick Links</h3>
+      <ul>
+        <li><a href="{% url 'index' %}">Home</a></li>
+        <li><a href="{% url 'about' %}">About Us</a></li>
+        <li><a href="{% url 'contact' %}">Contact Us</a></li>
+        <li><a href="{% url 'help' %}">Help Center</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-section contact">
+      <h3>Contact Us</h3>
+      <p>123 Finance Street, Hyderabad, India</p>
+      <p>Phone: +91-1234567890</p>
+      <p>Email: anjuu@gmail.com</p>
+      
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>&copy; {{ current_year }} BOB Bank. All rights reserved.</p>
+  </div><br><br><br><br><br>
+</footer>
+</div>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const form      = document.getElementById("delete-validation-form");
+    const loader    = document.getElementById("loader-overlay");
+    const messageEl = document.getElementById("message");
+    const submitBtn = document.getElementById("submit-btn");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      // show loader
+      loader.style.display = "flex";
+      messageEl.textContent = "";
+      submitBtn.disabled   = true;
+
+      // gather form data + CSRF
+      const formData = new FormData(form);
+      const csrf = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      const headers = { "X-CSRFToken": csrf };
+
+      try {
+        const response = await fetch(form.action || window.location.pathname, {
+          method: "POST",
+          headers,
+          body: formData
+        });
+
+        // try parse JSON
+        const data = await response.json();
+
+        if (response.ok) {
+          // success: show message, then redirect
+          messageEl.innerHTML = `<p style="color:green">✅ ${data.message}</p>`;
+          if (data.redirect) {
+            setTimeout(() => {
+              window.location.href = data.redirect;
+            }, 1000);
+          }
+        } else {
+          // server-side error
+          messageEl.innerHTML = `<p style="color:red">❌ ${data.message}</p>`;
+        }
+      } catch (err) {
+        console.error("Fetch/parse error:", err);
+        messageEl.innerHTML = `<p style="color:red">❌ Network error occurred.</p>`;
+      } finally {
+        // hide loader & re-enable
+        loader.style.display = "none";
+        submitBtn.disabled   = false;
+      }
+    });
+  });
+  </script>
+</body>
+</html>

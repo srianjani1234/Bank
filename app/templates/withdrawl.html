@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Withdraw | BOB BANK</title>
+  <link rel="stylesheet" href="{% static 'css/withdraw.css' %}">
+</head>
+<body>
+
+  <nav>
+    <div class="nav-div-main">
+      <h1 id="title">BOB BANK</h1>
+      <ol>
+        <a href="{% url 'index' %}"><li>Home</li></a>
+        <a href="{% url 'about' %}"><li>About Us</li></a>
+        <a href="{% url 'contact' %}"><li>Contact Us</li></a>
+        <a href="{% url 'help' %}"><li>Help</li></a>
+      </ol>
+    </div>
+  </nav>
+
+  <h1>CASH IN HAND</h1>
+
+  <form id="withdraw-form" method="post">
+    {% csrf_token %}
+    <div class="form-inner-div">
+      <div class="middle-div">
+        <label>ACCOUNT NUMBER</label><br><br>
+        <input type="number" name="acc" required><br><br>
+
+        <label>PIN</label><br><br>
+        <input type="password" name="pin" required><br><br>
+
+        <label>AMOUNT</label><br><br>
+        <input type="number" name="amt" required><br><br>
+
+        <div class="btn-div">
+          <button type="submit" id="submit-btn">WITHDRAW</button>
+          <button><a href="{% url 'index' %}">BACK</a></button>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <!-- ✅ LOADER OVERLAY -->
+  <div id="loader-overlay" style="display: none;">
+    <div class="spinner"></div>
+    <p><strong>Processing your withdrawal, please wait...</strong></p>
+  </div>
+
+  <!-- ✅ MESSAGE -->
+  <div id="message" style="text-align: center; margin-top: 20px;"></div>
+
+  <div id="foot">
+    <footer class="footer">
+      <div class="footer-container">
+        <div class="footer-section about">
+          <h3>About BOB Bank</h3>
+          <p>
+            BOB Bank is committed to providing you with secure, reliable banking
+            services. From savings accounts to loans, we’re here to help you grow
+            your financial future.
+          </p>
+        </div>
+
+        <div class="footer-section links">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="{% url 'index' %}">Home</a></li>
+            <li><a href="{% url 'about' %}">About Us</a></li>
+            <li><a href="{% url 'contact' %}">Contact Us</a></li>
+            <li><a href="{% url 'help' %}">Help Center</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-section contact">
+          <h3>Contact Us</h3>
+          <p>123 Finance Street, Hyderabad, India</p>
+          <p>Phone: +91-1234567890</p>
+          <p>Email: anjuu@gmail.com</p>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; {{ current_year }} BOB Bank. All rights reserved.</p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ✅ JAVASCRIPT -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const form = document.getElementById("withdraw-form");
+      const loaderOverlay = document.getElementById("loader-overlay");
+      const messageBox = document.getElementById("message");
+      const submitBtn = document.getElementById("submit-btn");
+
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        loaderOverlay.style.display = "flex";
+        messageBox.innerHTML = "";
+        submitBtn.disabled = true;
+
+        try {
+          const response = await fetch("", {
+            method: "POST",
+            headers: {
+              "X-CSRFToken": csrfToken
+            },
+            body: formData
+          });
+
+          const data = await response.json();
+          console.log("Response from server:", data);  // for debugging
+
+          if (data.message) {
+            messageBox.innerHTML = `<p style="color:green;">✅ ${data.message}</p>`;
+            form.reset();
+          } else if (data.error) {
+            messageBox.innerHTML = `<p style="color:red;">❌ ${data.error}</p>`;
+          } else {
+            messageBox.innerHTML = `<p style="color:gray;">⚠️ Unknown response</p>`;
+          }
+
+        } catch (error) {
+          console.error("Fetch error:", error);
+          messageBox.innerHTML = `<p style="color:red;">❌ Network error occurred.</p>`;
+        } finally {
+          loaderOverlay.style.display = "none";
+          submitBtn.disabled = false;
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

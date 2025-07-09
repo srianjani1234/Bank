@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fund Transfer</title>
+  <link rel="stylesheet" href="{% static 'css/transfer.css' %}" />
+</head>
+<body>
+  <nav>
+    <div class="nav-div-main">
+      <h1 id="title">BOB BANK</h1>
+      <ol>
+        <a href="{% url 'index' %}"><li>Home</li></a>
+        <a href="{% url 'about' %}"><li>About Us</li></a>
+        <a href="{% url 'contact' %}"><li>Contact Us</li></a>
+        <a href="{% url 'help' %}"><li>Help</li></a>
+      </ol>
+    </div>
+  </nav>
+
+  <h1>FUND TRANSFER PORTAL</h1>
+  <form id="fund-transfer-form" method="post">
+    {% csrf_token %}
+    <div class="form-inner-div">
+      <div class="middle-div">
+        <label>FROM ACCOUNT</label><br><br>
+        <input type="number" name="facc" required><br><br>
+
+        <label>TO ACCOUNT</label><br><br>
+        <input type="number" name="tacc" required><br><br>
+
+        <label>MOBILE</label><br><br>
+        <input type="tel" name="phone" required><br><br>
+
+        <label>EMAIL</label><br><br>
+        <input type="email" name="email" required><br><br>
+
+        <div class="btn-div">
+          <button type="submit" id="submit-btn">TRANSFER</button>
+          <button type="button"><a href="{% url 'index' %}">BACK</a></button>
+        </div>
+      </div>
+    </div>
+  </form>
+
+ 
+ <!-- ✅ Loader Overlay -->
+<div id="loader-overlay" style="display: none;">
+  <div class="spinner"></div>
+  <p><strong>Sending email, please wait...</strong></p>
+</div>
+
+
+  <!-- ✅ Message -->
+  <div id="message" style="text-align:center; margin-top: 20px;"></div>
+   <div id="foot">
+<footer class="footer">
+  <div class="footer-container">
+    <!-- About -->
+    <div class="footer-section about">
+      <h3>About BOB Bank</h3>
+      <p>
+        BOB Bank is committed to providing you with secure, reliable banking
+        services. From savings accounts to loans, we’re here to help you grow
+        your financial future.
+      </p>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="footer-section links">
+      <h3>Quick Links</h3>
+      <ul>
+        <li><a href="{% url 'index' %}">Home</a></li>
+        <li><a href="{% url 'about' %}">About Us</a></li>
+        <li><a href="{% url 'contact' %}">Contact Us</a></li>
+        <li><a href="{% url 'help' %}">Help Center</a></li>
+      </ul>
+    </div>
+
+    <!-- Contact -->
+    <div class="footer-section contact">
+      <h3>Contact Us</h3>
+      <p>123 Finance Street, Hyderabad, India</p>
+      <p>Phone: +91-1234567890</p>
+      <p>Email: anjuu@gmail.com</p>
+      
+    </div>
+  </div>
+
+  <!-- Copyright -->
+  <div class="footer-bottom">
+    <p>&copy; {{ current_year }} BOB Bank. All rights reserved.</p>
+  </div><br><br><br><br><br>
+</footer>
+</div>
+
+  <!-- ✅ JavaScript -->
+ <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("fund-transfer-form");
+    const loaderOverlay = document.getElementById("loader-overlay");
+    const messageBox = document.getElementById("message");
+    const submitBtn = document.getElementById("submit-btn");
+
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+      // ✅ Show loader
+      loaderOverlay.style.display = "flex";
+      messageBox.innerHTML = "";
+      submitBtn.disabled = true;
+
+      try {
+        const response = await fetch("", {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": csrfToken
+          },
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // ✅ Display success message
+          messageBox.innerHTML = `<p style="color: green;">${data.message}</p>`;
+
+          // ✅ Redirect after 2 seconds, if redirect URL is sent
+          if (data.redirect) {
+            setTimeout(() => {
+              window.location.href = data.redirect;
+            }, 2000);
+          }
+        } else {
+          // ❌ Display error from server
+          messageBox.innerHTML = `<p style="color: red;">❌ ${data.message || "Something went wrong."}</p>`;
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        messageBox.innerHTML = `<p style="color: red;">❌ Network error occurred.</p>`;
+      } finally {
+        // ✅ Hide loader and enable button again
+        loaderOverlay.style.display = "none";
+        submitBtn.disabled = false;
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="{% static 'css/Aboutus.css' %}">
+</head>
+<body>
+  <section class="about-us-section">
+  <div class="about-us-container">
+    <h2>About BOB Bank</h2>
+    <p>Welcome to <strong>BOB Bank</strong> – your trusted digital banking partner. We are committed to delivering secure, user-friendly, and efficient banking solutions tailored for every individual.</p>
+
+    <p>Founded with a vision to revolutionize the way people interact with their finances, BOB Bank empowers users with cutting-edge tools to manage accounts, make transactions, and grow their savings — all from the comfort of their devices.</p>
+
+    <p>Our core features include:</p>
+    <ul>
+      <li>💳 Instant Account Creation</li>
+      <li>🔒 Secure PIN Generation</li>
+      <li>💸 Easy Deposits & Withdrawals</li>
+      <li>📤 Quick Account Transfers</li>
+      <li>📊 Real-Time Balance Enquiry</li>
+    </ul>
+
+    <p>We value transparency, innovation, and customer satisfaction. Whether you're saving for the future or handling everyday expenses, <strong>BOB Bank</strong> is here to make banking simpler and smarter.</p>
+
+    <p>Start your journey with BOB Bank — <em>where technology meets trust.</em></p>
+  </div>
+  <div class="back-button-container">
+  <button onclick="history.back()" class="back-button"><a href="{% url 'index' %}">⬅ Back</a></button>
+</div>
+
+</section>
+
+</body>
+</html>

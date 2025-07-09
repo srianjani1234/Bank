@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Generate PIN – BOB Bank</title>
+  <link rel="stylesheet" href="{% static 'css/pin.css' %}" />
+  <style>
+    /* Loader styles */
+ 
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-div-main">
+      <h1 id="title">BOB BANK</h1>
+      <ol>
+        <a href="{% url 'index' %}"><li>Home</li></a>
+        <a href="{% url 'about' %}"><li>About Us</li></a>
+        <a href="{% url 'contact' %}"><li>Contact Us</li></a>
+        <a href="{% url 'help' %}"><li>Help</li></a>
+      </ol>
+    </div>
+  </nav>
+
+  <h1>GENERATE YOUR PIN</h1>
+
+  <form id="create-account-form" method="post">
+    {% csrf_token %}
+    <div class="form-inner-div">
+      <div class="middle-div">
+        <label for="acc">ACCOUNT NUMBER</label><br><br>
+        <input type="number" name="acc" id="acc" required><br><br><br>
+
+        <div class="btn-div">
+          <button type="submit" id="gen-btn">GENERATE</button>
+          <button><a href="{% url 'index' %}">⬅ Back</a></button>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <!-- Loader overlay -->
+  <div id="loader-overlay">
+    <div class="loader"></div>
+  </div>
+
+  <!-- Message box -->
+  <div id="message"></div>
+<div id="foot">
+<footer class="footer">
+  <div class="footer-container">
+    <!-- About -->
+    <div class="footer-section about">
+      <h3>About BOB Bank</h3>
+      <p>
+        BOB Bank is committed to providing you with secure, reliable banking
+        services. From savings accounts to loans, we’re here to help you grow
+        your financial future.
+      </p>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="footer-section links">
+      <h3>Quick Links</h3>
+      <ul>
+        <li><a href="{% url 'index' %}">Home</a></li>
+        <li><a href="{% url 'about' %}">About Us</a></li>
+        <li><a href="{% url 'contact' %}">Contact Us</a></li>
+        <li><a href="{% url 'help' %}">Help Center</a></li>
+      </ul>
+    </div>
+
+    <!-- Contact -->
+    <div class="footer-section contact">
+      <h3>Contact Us</h3>
+      <p>123 Finance Street, Hyderabad, India</p>
+      <p>Phone: +91-1234567890</p>
+      <p>Email: anjuu@gmail.com</p>
+      
+    </div>
+  </div>
+
+  <!-- Copyright -->
+  <div class="footer-bottom">
+    <p>&copy; {{ current_year }} BOB Bank. All rights reserved.</p>
+  </div><br><br><br>
+</footer>
+</div>
+  <!-- JS script -->
+ <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const form = document.getElementById("create-account-form");
+      const loaderOverlay = document.getElementById("loader-overlay");
+      const messageBox = document.getElementById("message");
+      const submitBtn = document.getElementById("gen-btn");
+
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        loaderOverlay.style.display = "flex";
+        messageBox.innerHTML = `<p style="color:blue;">⏳ Sending mail, please wait...</p>`;
+        submitBtn.disabled = true;
+
+        try {
+          const response = await fetch("", {
+            method: "POST",
+            headers: { "X-CSRFToken": csrfToken },
+            body: formData
+          });
+
+          let data = await response.json();
+
+          if (response.ok) {
+            messageBox.innerHTML = `<p style="color:green;">${data.message}</p>`;
+            form.reset();
+
+            if (data.redirect) {
+              setTimeout(() => {
+                window.location.href = data.redirect;
+              }, 2000); // Redirect after 2 seconds
+            }
+          } else {
+            messageBox.innerHTML = `<p style="color:red;">❌ ${data.message || "An error occurred."}</p>`;
+          }
+
+        } catch (error) {
+          console.error("Fetch error:", error);
+          messageBox.innerHTML = `<p style="color:red;">❌ Network error. Please try again.</p>`;
+        } finally {
+          loaderOverlay.style.display = "none";
+          submitBtn.disabled = false;
+        }
+      });
+    });
+  </script>
+
+
+</body>
+</html>
