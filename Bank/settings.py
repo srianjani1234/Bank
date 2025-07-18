@@ -135,7 +135,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # Add this middleware
 MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',  # Add this just after SecurityMiddleware
-    ...
 ]
 
 # Default primary key field type
