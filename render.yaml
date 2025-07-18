@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: django-sqlite-app
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn your_project_name.wsgi:application
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: your_project_name.settings
+      - key: SECRET_KEY
+        value: your-secret-key
+      - key: DEBUG
+        value: False
